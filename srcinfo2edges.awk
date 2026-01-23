@@ -28,8 +28,9 @@ $1 == "pkgbase" {
 }
 
 $1 == "pkgbase" 			{ base     = 1 }
-$1 == "depends"	    && $3 && base	{ deps[$3] = 1 }
-$1 == "makedepends" && $3 && base	{ deps[$3] = 1 }
+$1 == "depends"	     && $3 && base	{ deps[$3] = 1 }
+$1 == "makedepends"  && $3 && base	{ deps[$3] = 1 }
+$1 == "checkdepends" && $3 && base	{ deps[$3] = 1 }
 NF == 0					{ base      = 0 }
 $1 == "pkgname"     && $3		{ names[$3] = 1 }
 $1 == "provides"    && $3		{ names[$3] = 1 }
