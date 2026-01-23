@@ -46,6 +46,23 @@ How to bootstrap a local binary repo from pacbrew-repo
 - Build
 	$ ../repo-build/pkgctl-version/build-all.sh .
 
+How to handle a new package
+- Build it and push it to staging repo
+	$ pkgctl build --repo pacbrew-staging -r -m "blah" -u
+
+How to handle one updated package
+- Build it and push it to staging repo
+	$ pkgctl build --repo pacbrew-staging -r -m "blah" -u
+- Find its reverse dependencies & build order
+	$ arch-rebuild-order --repos=pacbrew,pacbrew-testing,pacbrew-staging <pkgname>
+- Rebuild them and push to staging repo
+	$ pkgctl build --rebuild --repo pacbrew-staging -r -m "Rebuild for <pkgname>"
+
+How to handle multiple updated packages
+- Find the reverse dependencies & build order
+	$ arch-rebuild-order --repos=pacbrew,pacbrew-testing,pacbrew-staging <pkgname1> <pkgname2>...
+- Using that build order, build packages that were updated, and rebuild packages that weren't.
+
 ---
 Setting up pkgctl version (Steps may be incomplete & require testing)
 
