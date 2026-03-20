@@ -63,6 +63,8 @@ How to handle multiple updated packages
 	$ arch-rebuild-order --repos=pacbrew,pacbrew-testing,pacbrew-staging <pkgname1> <pkgname2>...
 - Using that build order, build packages that were updated, and rebuild packages that weren't.
 
+** If we do --rebuild for updated packages, will they decline to increment pkgrel?
+
 ---
 Setting up pkgctl version (Steps may be incomplete & require testing)
 
