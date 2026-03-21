@@ -31,10 +31,10 @@ mapfile -t buildme < <(
 
 skipped=()
 for p in "${buildme[@]}"; do
-	read -r pkgbase < <(awk '/pkgbase = /  { print $3 }' "${p}/.SRCINFO")
+	pkgdir=$(basename $(readlink -e $p))
 	pkgctl build --rebuild \
 		--repo $repo \
-		-r -m "Rebuild $pkgbase for ${upgnames[@]}" \
+		-r -m "Rebuild $pkgdir for ${upgnames[@]}" \
 		-u \
 		"$p" \
 	|| skipped+=("$p")
