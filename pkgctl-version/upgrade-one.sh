@@ -29,7 +29,7 @@ mapfile -t buildme < <(
 	}' 
 )
 
-declare -a skipped
+skipped=()
 for p in "${buildme[@]}"
 do
 	pkgctl build --rebuild \
@@ -41,7 +41,7 @@ do
 	break
 done
 
-[ "${#skipped}" -eq 0 ] && exit 0
+[ ${#skipped[@]} -eq 0 ] && exit 0
 
 echo >&2 "Skipped the following packages:"
 for pkg in "${skipped[@]}"; do
