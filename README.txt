@@ -43,6 +43,8 @@ How to bootstrap a local binary repo from pacbrew-repo
 - Initialize package source repo
 	$ cd pacbrew-repo
 	$ pkgctl repo configure
+	# Remove a default rule that works only for single-package source repos.
+	$ sed -i '/^\/\*\/$/d' .git/info/exclude
 - Build
 	$ ../repo-build/pkgctl-version/build-all.sh .
 
