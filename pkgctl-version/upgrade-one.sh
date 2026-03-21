@@ -30,8 +30,7 @@ mapfile -t buildme < <(
 )
 
 skipped=()
-for p in "${buildme[@]}"
-do
+for p in "${buildme[@]}"; do
 	pkgctl build --rebuild \
 		--repo $repo \
 		-r -m "Rebuild for ${pkgnames[@]}" \
