@@ -17,10 +17,10 @@ repodir="$(dirname "$srcdir")"
 
 pkgctl build --repo $repo -r -u "$srcdir"
 
-mapfile -t pkgnames < <(awk '/^pkgname = / { print $3 }' "${srcdir}/.SRCINFO")
+mapfile -t upgnames < <(awk '/^pkgname = / { print $3 }' "${srcdir}/.SRCINFO")
 read -r pkgver      < <(awk '/pkgver = /  { print $3 }'  "${srcdir}/.SRCINFO")
 
-mapfile -t -d ' ' -s 1 revdeps < <(arch-rebuild-order --repos="$universe" "${pkgnames[@]}")
+mapfile -t -d ' ' -s 1 revdeps < <(arch-rebuild-order --repos="$universe" "${upgnames[@]}")
 mapfile -t buildme < <(
 	expac -S '%e' "${revdeps[@]}" \
 	| awk -v repodir="$repodir" '!seen[$0]++ {
@@ -31,9 +31,10 @@ mapfile -t buildme < <(
 
 skipped=()
 for p in "${buildme[@]}"; do
+	read -r pkgbase < <(awk '/pkgbase = /  { print $3 }' "${p}/.SRCINFO")
 	pkgctl build --rebuild \
 		--repo $repo \
-		-r -m "Rebuild for ${pkgnames[@]}" \
+		-r -m "Rebuild $pkgbase for ${upgnames[@]}" \
 		-u \
 		"$p" \
 	|| skipped+=("$p")
