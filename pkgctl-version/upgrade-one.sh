@@ -38,7 +38,6 @@ for p in "${buildme[@]}"; do
 		-u \
 		"$p" \
 	|| skipped+=("$p")
-	break
 done
 
 [ ${#skipped[@]} -eq 0 ] && exit 0
