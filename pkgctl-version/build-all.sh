@@ -17,4 +17,6 @@ fi
 mapfile -t pkgbuilds < <(find "$pkgbuild_repo" -maxdepth 2 -name PKGBUILD)
 "${SCRIPT_DIR}/gen-srcinfo.sh" "${pkgbuilds[@]}"
 mapfile -t order < <("${SCRIPT_DIR}/repo2edges.sh" "$pkgbuild_repo" | tsort | grep "$pkgbuild_repo")
-exec "${SCRIPT_DIR}/build-some.sh" "$(dirname "${order[@]}")"
+mapfile -t dirorder < <(dirname "${order[@]}")
+
+exec "${SCRIPT_DIR}/build-some.sh" "${dirorder[@]}"
