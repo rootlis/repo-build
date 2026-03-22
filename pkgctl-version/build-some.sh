@@ -14,7 +14,7 @@ skipped=()
 while [ $# -gt 0 ]
 do
 	pushd "$1"
-	"${SCRIPT_DIR}/build.sh" -- -- -f || skipped+=("$1")
+	"${SCRIPT_DIR}/build.sh" || skipped+=("$1")
 	popd
 	shift
 done
