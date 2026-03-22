@@ -10,7 +10,7 @@ if [ $# -ne 1 ]; then
 fi
 
 if ! pkgbuild_repo=$(readlink -e "$1"); then
-	echo >&2 "Can't find pkgbuild directory: $3"
+	echo >&2 "Can't find pkgbuild directory: $1"
 	exit 3
 fi
 
