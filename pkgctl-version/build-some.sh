@@ -19,7 +19,7 @@ do
 	shift
 done
 
-[ "${#skipped}" -eq 0 ] && exit 0
+[ "${#skipped[@]}" -eq 0 ] && exit 0
 
 echo >&2 "Skipped the following packages:"
 for pkg in "${skipped[@]}"; do
