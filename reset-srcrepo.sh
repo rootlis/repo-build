@@ -8,7 +8,11 @@ if [ "$#" -lt 1 ]; then
 fi
 repodir="$1"
 
-git -C "$repodir" clean -fiXd
-git -C "$repodir" reset :/
-git -C "$repodir" restore :/
+# repo-rinse.sh: https://gist.github.com/nicktoumpelis/11214362
+git -C "$repodir" reset --hard
+git -C "$repodir" submodule sync --recursive
+git -C "$repodir" submodule update --init --force --recursive
+git -C "$repodir" clean -iffdx
+git -C "$repodir" submodule foreach --recursive git clean -iffdx
+
 git -C "$repodir" status
