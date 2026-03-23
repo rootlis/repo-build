@@ -1,0 +1,46 @@
+#!/bin/sh
+set -euo pipefail
+
+# Consider locking dbscripts before snapshotting.
+
+if [ $# -eq 0 ]; then
+	echo >&2 "Snapshot binary/source repos."
+	echo >&2 "usage: $0 <parent dataset>"
+	exit 255
+fi
+parent_dataset="$1"
+bin_dataset="$parent_dataset"/binary-repo
+state_dataset="$bin_dataset"/state
+src_dataset="$parent_dataset"/source-repo
+
+bin_mountpoint=$(zfs get -H -o value mountpoint "$bin_dataset")
+read -r lastupdate < "$bin_mountpoint"/lastupdate
+
+state_mountpoint=$(zfs get -H -o value mountpoint "$state_dataset")
+if state_commit=$(git -C "$state_mountpoint"/state rev-parse --short --verify HEAD); then
+	:
+else
+	state_commit=INVALID
+fi
+
+src_mountpoint=$(zfs get -H -o value mountpoint "$src_dataset")
+src_dirty=$([ -n "$(git -C "$src_mountpoint" status --porcelain)" ] && echo true || echo false)
+if src_commit=$(git -C "$src_mountpoint" rev-parse --short --verify HEAD); then
+	:
+else
+	src_commit=INVALID
+fi
+if src_branch=$(git -C "$src_mountpoint" symbolic-ref --quiet --short HEAD); then
+	:
+else
+	src_branch=DETACHED
+fi
+
+snapname=repo-snapshot-"$(date -Im)"
+zfs snapshot -r \
+	-o net.rootless:bin-lastupdate="$lastupdate" \
+	-o net.rootless:state-git-commit="$state_commit" \
+	-o net.rootless:source-git-commit="$src_commit" \
+	-o net.rootless:source-git-branch="$src_branch" \
+	-o net.rootless:source-git-dirty="$src_dirty" \
+	"${parent_dataset}@${snapname}"
