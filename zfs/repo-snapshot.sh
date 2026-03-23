@@ -24,7 +24,7 @@ else
 fi
 
 src_mountpoint=$(zfs get -H -o value mountpoint "$src_dataset")
-src_dirty=$([ -n "$(git -C "$src_mountpoint" status --porcelain)" ] && echo true || echo false)
+src_dirty=$([ -n "$(git --no-optional-locks -C "$src_mountpoint" status --porcelain)" ] && echo true || echo false)
 if src_commit=$(git -C "$src_mountpoint" rev-parse --short --verify HEAD); then
 	:
 else
