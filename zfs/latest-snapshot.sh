@@ -8,9 +8,10 @@ if [ $# -eq 0 ]; then
 fi
 dataset="$1"
 
-echo "Dataset	Snapshot	bin-lastupdate	state-git-commit	source-git-dirty	source-git-commit	source-git-branch"
+echo "Dataset	Snapshot	bin-lastupdate	state-git-commit	source-git-commit	source-git-dirty	source-git-branch"
 zfs list -H -t snapshot -s creation -r \
-	-o name,net.rootless:bin-lastupdate,net.rootless:state-git-commit,net.rootless:source-git-dirty,net.rootless:source-git-commit,net.rootless:source-git-branch \
+	-o name,net.rootless:bin-lastupdate,net.rootless:state-git-commit,net.rootless:source-git-commit,net.rootless:source-git-dirty,net.rootless:source-git-branch \
 	"$dataset" \
 | awk -F@ '{last[$1]=$0} END {for (ds in last) print last[ds]}' \
-| sed 's/\@/\t/'
+| sed 's/\@/\t/' \
+| awk 'BEGIN{ FS=OFS="\t" } { $3=strftime("%Y/%m/%d %T",$3); print }'
