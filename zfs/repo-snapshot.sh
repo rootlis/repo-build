@@ -14,27 +14,26 @@ state_dataset="$bin_dataset"/state
 src_dataset="$parent_dataset"/source-repo
 
 bin_mountpoint=$(zfs get -H -o value mountpoint "$bin_dataset")
-read -r lastupdate < "$bin_mountpoint"/lastupdate
-
 state_mountpoint=$(zfs get -H -o value mountpoint "$state_dataset")
-if state_commit=$(git -C "$state_mountpoint"/state rev-parse --short --verify HEAD); then
-	:
-else
-	state_commit=INVALID
-fi
-
 src_mountpoint=$(zfs get -H -o value mountpoint "$src_dataset")
-src_dirty=$([ -n "$(git --no-optional-locks -C "$src_mountpoint" status --porcelain)" ] && echo true || echo false)
-if src_commit=$(git -C "$src_mountpoint" rev-parse --short --verify HEAD); then
-	:
-else
-	src_commit=INVALID
-fi
-if src_branch=$(git -C "$src_mountpoint" symbolic-ref --quiet --short HEAD); then
-	:
-else
-	src_branch=DETACHED
-fi
+
+read -r lastupdate < "$bin_mountpoint"/lastupdate
+state_commit=$(
+	git -C "$state_mountpoint"/state rev-parse --short --verify HEAD \
+	|| echo INVALID
+)
+src_dirty=$(
+	[ -n "$(git --no-optional-locks -C "$src_mountpoint" status --porcelain)" ] \
+	&& echo true \
+	|| echo false
+)
+src_commit=$(
+	git -C "$src_mountpoint" rev-parse --short --verify HEAD \
+	|| echo INVALID
+)
+src_branch=$(git -C "$src_mountpoint" symbolic-ref --quiet --short HEAD \
+	|| echo DETACHED
+)
 
 snapname=repo-snapshot-"$(date -Im)"
 zfs snapshot -r \
