@@ -23,4 +23,4 @@ shift
 cd "$SCRIPT_DIR"
 [ -e "$mkfile" ] || ./repo2edges.sh "$pbroot" | ./edge2makefile.awk > "$mkfile"
 cd "$pbroot"
-make -rR -f "$mkfile" -j1 "$@" | grep '^/'
+make -B -rR -f "$mkfile" -j1 "$@" | grep '^/'
