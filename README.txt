@@ -1,40 +1,76 @@
-repo-build contents
-2025-08-19
-2025-12-18 - Add pkgctl version
+This repository contains the scripts written while adapting Arch tooling
+to ps5-payload-dev's pacbrew-repo.  This README is a rough set of notes
+on how set up and use them.
 
-.SRCINFO Dependency Analysis 
+This work has involved three phases:
+ - Build order calculation using .SRCINFO files
+ - Build scripts & DB management using only archbuild from Arch devtools
+   This version uses archbuild for clean chroot building & my own
+   scripts for local DB management.
+ - Build scripts & DB management using modified Arch tools
+   This version was created to adapt the battle-tested Arch workflow to
+   pacbrew for the purposes of security, reliability, maintainability,
+   collaboration, ease of use, and personal interest in my own system.
+   It opens the doors to other features of the Arch extended universe,
+   such as repository mirrors, package archival, and reproducible
+   builds.
+
+===
+Contents
+===
+
+Dependency Analysis
+
 buildorder.sh			Input: pkgnames 	/ Stdout: PKGBUILD files to build specified pkgnames in order
 repo2edges.sh			Input: ABS tree 	/ Stdout: tab-separated dependency pairs
 list-multiproviders.sh		Input: ABS tree		/ Stdout: pkgnames provided by multiple PKGBUILDs
-
-PKGBUILD Repository Info
-list-all-makedepends.sh		Input: ABS tree		/ Stdout: pkgbase<tab>build_dep1 build_dep2 ...
-list-pkgbuild-options.sh	Input: ABS tree 	/ Stdout: pkgbase<tab>opt1 opt2 ...
-
-PKGBUILD Repository Updating
-gen-srcinfo.sh			Input: PKGBUILDs	/ Result: Writes .SRCINFO files in place
-run-pkgver.sh			Input: PKGBUILDs	/ Result: Runs pkgver() on PKGBUILDs
-reset-pkgver.sh			Input: PKGBUILDs	/ Result: Sets pkgver to git
-
-Awk Scripts
 srcinfo2edges.awk		Input: .SRCINFOs	/ Stdout: tab-separated dependency pairs (edges)
 edge2dot.awk			Stdin: edges		/ Stdout: Graphviz DOT file
 edge2makefile.awk		Stdin: edges		/ Stdout: Makefile for buildorder.sh
 
-archbuild-version/
+---
+
+PKGBUILD Repository Info
+
+list-all-makedepends.sh		Input: ABS tree		/ Stdout: pkgbase<tab>build_dep1 build_dep2 ...
+list-pkgbuild-options.sh	Input: ABS tree 	/ Stdout: pkgbase<tab>opt1 opt2 ...
+
+---
+
+PKGBUILD Repository Management
+
+gen-srcinfo.sh			Input: PKGBUILDs	/ Result: Writes .SRCINFO files in place
+run-pkgver.sh			Input: PKGBUILDs	/ Result: Runs pkgver() on PKGBUILDs
+reset-pkgver.sh			Input: PKGBUILDs	/ Result: Sets pkgver to git
+reset-srcrepo.sh		Input: ABS tree		/ Result: Cleans and resets PKGBUILD repo (repo-rinse.sh)
+
+---
+
+dbscripts Binary Repository Management
+
+reset-pkgrepo.sh		Input: repo name	/ Result: Deletes pkgs from dbscripts, pacman cache, & ~/staging
+
+---
+
+Build scripts: Wrappers to build PKGBUILDs & update binary repos
+
+archbuild-version/	Wrappers for stock Arch devtools
 build.sh			Run pkgver(), compare pkgver with repo, archbuild, and push to repo.
 build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
 build-all.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs
 repo-init.sh			Input: dest, arch, EXT	/ Result: Creates empty .db.tar.gz files in dest/arch/
 usr/				Config files to copy to devtools installation
 
-pkgctl-version/
+pkgctl-version/		Wrappers for modified Arch devtools & dbscripts
 build.sh			Build, commit package source changes, and push to repo.
 build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
 build-all.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs in proper order
-reset-repo.sh			Input: repo name	/ Result: Deletes pkgs from dbscripts, pacman cache, & ~/staging
 
----
+
+===
+Usage notes
+===
+
 Using pkgctl version
 
 How to bootstrap a local binary repo from pacbrew-repo
@@ -68,7 +104,8 @@ How to handle multiple updated packages
 ** If we do --rebuild for updated packages, will they decline to increment pkgrel?
 
 ---
-Setting up pkgctl version (Steps may be incomplete & require testing)
+
+Setting up pkgctl version (Steps are incomplete & require testing)
 
 How to prepare build machine
 - Set up makepkg
@@ -123,7 +160,7 @@ How to prepare packaging server
 	# mkdir -p /etc/dbscripts
 	# echo "Your Name <youremail@example.com> yourusername" >> /etc/dbscripts/authors.conf
 
-How to add a custom repository to devtools via Makefile
+How to modify devtools Makefile to add a custom repository
 - Add "myrepopkg" "myrepo-testingpkg" and "myrepo-stagingpkg" to COMMITPKG_LINKS
 - Add "myrepo-x86_64-build" "myrepo-testing-x86_64-build" and "myrepo-staging-x86_64-build" to ARCHBUILD_LINKS
 
@@ -142,6 +179,7 @@ How to add a custom repository to dbscripts via config.local
 	STAGING_REPOS=(... myrepo-staging)
 
 ---
+
 Using Archbuild version
 
 * How to install build tools
@@ -168,8 +206,3 @@ Using Archbuild version
 	$ gen-srcinfo.sh pacbrew-repo/*/PKGBUILD
 - Build each PKGBUILD and push to binary repo
 	$ build-all.sh pacbrew-repo
-
-* How specify a single target when bootstrapping a local binary repo
-* How to add a new binary to the repo
-* How to update a binary with a git-based PKGBUILD
-- Don't forget to rebuild its dependents
