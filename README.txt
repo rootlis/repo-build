@@ -55,15 +55,15 @@ Build scripts: Wrappers to build PKGBUILDs & update binary repos
 
 archbuild-version/	Wrappers for stock Arch devtools
   usr/				Config files to copy to devtools installation
-  build.sh			Input: PKGBUILD dir     / Result: Check version, build, & push to repo
+  build.sh			Input: PKGBUILD dir     / Result: Checks version, builds, & pushes to repo
   build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
-  build-all.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs
+  bootstrap.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs
   repo-init.sh			Input: dest, arch, EXT	/ Result: Creates empty .db.tar.gz files in dest/arch/
 
 pkgctl-version/		Wrappers for modified Arch devtools & dbscripts
-  build.sh			Input: PKGBUILD dir	/ Result: Build, release, and update db.
+  build.sh			Input: PKGBUILD dir	/ Result: Builds, releases, and updates db.
   build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
-  build-all.sh			Input: ABS tree		/ Result: Calculates build order & runs build-some.sh
+  bootstrap.sh			Input: ABS tree		/ Result: Calculates build order & runs build-some.sh
 
 
 ===
@@ -81,7 +81,7 @@ How to bootstrap a local binary repo from pacbrew-repo
 	# Remove a default rule that works only for single-package source repos.
 	$ sed -i '/^\/\*\/$/d' .git/info/exclude
 - Build
-	$ ../repo-build/pkgctl-version/build-all.sh .
+	$ ../repo-build/pkgctl-version/bootstrap.sh .
 
 How to handle a new package
 - Build it and push it to staging repo
@@ -204,4 +204,4 @@ Using Archbuild version
 - Generate .SRCINFOs
 	$ gen-srcinfo.sh pacbrew-repo/*/PKGBUILD
 - Build each PKGBUILD and push to binary repo
-	$ build-all.sh pacbrew-repo
+	$ bootstrap.sh pacbrew-repo
