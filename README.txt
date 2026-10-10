@@ -21,7 +21,7 @@ Contents
 
 Dependency Analysis
 
-buildorder.sh			Input: pkgnames 	/ Stdout: PKGBUILD files to build specified pkgnames in order
+buildorder.sh			Input: pkgnames 	/ Stdout: PKGBUILDs in build order
 repo2edges.sh			Input: ABS tree 	/ Stdout: tab-separated dependency pairs
 list-multiproviders.sh		Input: ABS tree		/ Stdout: pkgnames provided by multiple PKGBUILDs
 srcinfo2edges.awk		Input: .SRCINFOs	/ Stdout: tab-separated dependency pairs (edges)
@@ -54,16 +54,16 @@ reset-pkgrepo.sh		Input: repo name	/ Result: Deletes pkgs from dbscripts, pacman
 Build scripts: Wrappers to build PKGBUILDs & update binary repos
 
 archbuild-version/	Wrappers for stock Arch devtools
-build.sh			Run pkgver(), compare pkgver with repo, archbuild, and push to repo.
-build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
-build-all.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs
-repo-init.sh			Input: dest, arch, EXT	/ Result: Creates empty .db.tar.gz files in dest/arch/
-usr/				Config files to copy to devtools installation
+  usr/				Config files to copy to devtools installation
+  build.sh			Input: PKGBUILD dir     / Result: Check version, build, & push to repo
+  build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
+  build-all.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs
+  repo-init.sh			Input: dest, arch, EXT	/ Result: Creates empty .db.tar.gz files in dest/arch/
 
 pkgctl-version/		Wrappers for modified Arch devtools & dbscripts
-build.sh			Build, commit package source changes, and push to repo.
-build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
-build-all.sh			Input: ABS tree		/ Result: Runs build.sh for all PKGBUILDs in proper order
+  build.sh			Build, commit package source changes, and push to repo.
+  build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
+  build-all.sh			Input: ABS tree		/ Result: Calculates build order & runs build-some.sh
 
 
 ===
