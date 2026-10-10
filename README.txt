@@ -61,7 +61,7 @@ archbuild-version/	Wrappers for stock Arch devtools
   repo-init.sh			Input: dest, arch, EXT	/ Result: Creates empty .db.tar.gz files in dest/arch/
 
 pkgctl-version/		Wrappers for modified Arch devtools & dbscripts
-  build.sh			Build, commit package source changes, and push to repo.
+  build.sh			Input: PKGBUILD dir	/ Result: Build, release, and update db.
   build-some.sh			Input: PKGBUILDs	/ Result: Runs build.sh for each PKGBUILD
   build-all.sh			Input: ABS tree		/ Result: Calculates build order & runs build-some.sh
 
