@@ -41,7 +41,7 @@ PKGBUILD Repository Management
 
 gen-srcinfo.sh			Input: PKGBUILDs	/ Result: Writes .SRCINFO files in place
 run-pkgver.sh			Input: PKGBUILDs	/ Result: Runs pkgver() on PKGBUILDs
-reset-srcrepo.sh		Input: ABS tree		/ Result: Cleans and resets PKGBUILD repo (repo-rinse.sh)
+repo-rinse.sh			Input: ABS tree		/ Result: Cleans and resets PKGBUILD repo
 
 ---
 
