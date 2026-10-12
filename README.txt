@@ -48,6 +48,7 @@ repo-rinse.sh			Input: ABS tree		/ Result: Cleans and resets PKGBUILD repo
 dbscripts Binary Repository Management
 
 reset-pkgrepo.sh		Input: repo name	/ Result: Deletes pkgs from dbscripts, pacman cache, & ~/staging
+db-move-all.sh			Input: repo names	/ Result: Moves all packages from one repo to another
 
 ---
 
